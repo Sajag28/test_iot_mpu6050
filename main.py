@@ -1,9 +1,13 @@
-# main.py
 import logging
+import os
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from openai import OpenAI
 from pymongo import MongoClient
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 # Initialize logging
 logging.basicConfig(level=logging.INFO)
@@ -11,11 +15,11 @@ logging.basicConfig(level=logging.INFO)
 # Initialize FastAPI
 app = FastAPI()
 
-# Set up OpenAI client
-client = OpenAI(api_key="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")
+# Set up OpenAI client using the API key from the environment variable
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
-# Connect to MongoDB
-mongo_client = MongoClient("mongodb+srv://sajagaga2806:user@samplecluster.cdhbk.mongodb.net/")
+# Connect to MongoDB using the connection string from the environment variable
+mongo_client = MongoClient(os.getenv("MONGODB_URI"))
 db = mongo_client["Confirm"]  # Replace with your database name
 collection = db["Peple"]  # Replace with your collection name
 
