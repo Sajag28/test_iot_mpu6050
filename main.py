@@ -16,7 +16,7 @@ logging.basicConfig(level=logging.INFO)
 app = FastAPI()
 
 # Set up OpenAI client using the API key from the environment variable
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+# client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 # Connect to MongoDB using the connection string from the environment variable
 mongo_client = MongoClient(os.getenv("MONGODB_URI"))
@@ -32,33 +32,33 @@ class SensorData(BaseModel):
     timestamp: str
 
 # Define endpoint to get response from OpenAI
-@app.post("/retrieve")
-async def generate_response(request: OpenAIRequest):
-    try:
-        # Fetch data from MongoDB based on the contact field
-        data = collection.find_one({"contact": request.contact})  # Use the contact field
+# @app.post("/retrieve")
+# async def generate_response(request: OpenAIRequest):
+#     try:
+#         # Fetch data from MongoDB based on the contact field
+#         data = collection.find_one({"contact": request.contact})  # Use the contact field
 
-        if data is None:
-            raise HTTPException(status_code=404, detail="Data not found")
+#         if data is None:
+#             raise HTTPException(status_code=404, detail="Data not found")
 
-        # Use the fetched data in the prompt
-        prompt = f"Give me the info on the following company: {data['Company']}"  # Adjust the field name if needed
+#         # Use the fetched data in the prompt
+#         prompt = f"Give me the info on the following company: {data['Company']}"  # Adjust the field name if needed
 
-        # Call OpenAI API using the new client
-        completion = client.chat.completions.create(
-            model="gpt-3.5-turbo",  # Use the correct model name
-            messages=[
-                {"role": "system", "content": "You are a helpful assistant."},
-                {"role": "user", "content": prompt}
-            ],
-            max_tokens=100  # You can adjust this as needed
-        )
+#         # Call OpenAI API using the new client
+#         completion = client.chat.completions.create(
+#             model="gpt-3.5-turbo",  # Use the correct model name
+#             messages=[
+#                 {"role": "system", "content": "You are a helpful assistant."},
+#                 {"role": "user", "content": prompt}
+#             ],
+#             max_tokens=100  # You can adjust this as needed
+#         )
 
-        return {"response": completion.choices[0].message.content}
+#         return {"response": completion.choices[0].message.content}
 
-    except Exception as e:
-        logging.error(f"Error occurred while generating response: {str(e)}")
-        raise HTTPException(status_code=500, detail="Internal Server Error")
+#     except Exception as e:
+#         logging.error(f"Error occurred while generating response: {str(e)}")
+#         raise HTTPException(status_code=500, detail="Internal Server Error")
 
 # Define endpoint to store sensor data
 @app.post("/sensor")
